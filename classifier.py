@@ -13,7 +13,6 @@ class Sound:
         f = wave.open(filename)
         (nchannels, sampwidth, framerate, nframes, comptype, compname) = f.getparams()
         content = f.readframes(nframes)
-        #duration = nframes/framerate
         self.samples = np.frombuffer(content, dtype=np.int16)
         self.dT = 1/framerate
         self.fourier = np.abs( np.fft.rfft(self.samples) )
@@ -38,7 +37,7 @@ class Sound:
 def get_filenames_and_rights():
     names = list()
     Ys = list()
-    f = open('data_v_7_stc/meta/meta.txt', 'r')
+    f = open('meta/meta.txt', 'r')
     for line in f:
         t = line.split('\t')
         names.append(t[0])
@@ -48,23 +47,26 @@ def get_filenames_and_rights():
     
     
 def FindMetrics():
+    print("AudioParameters calculation in process ...") 
     names, Ys = get_filenames_and_rights()
     fileWr = open('data.txt','w')
     fileWr.write('peak\tomg1\tomg2\tomg3\tomg4\tomg5\tomg6\tomg7\tomg8\tomg9\tomg10\tomg11\tomg12\tomg13\tomg14\tomg15\tomg16\tomg17\tomg18\tomg19\tomg20\tspecies\n')
     result = list()
     for name,y in zip(names,Ys):
-        if not('time_stretch' in name):
-            continue
+        #if not('time_stretch' in name):
+        #    continue
         print( name )
-        g = Sound('data_v_7_stc/audio/' + name)
+        g = Sound('audio/' + name)
         arr = g.getResult()
         #print(arr[0])
         [ fileWr.write( '%.2f\t' % j ) for j in arr]
         fileWr.write(y)
     fileWr.close()
+    print("Success. This parameters was wrote in data.txt")
     return
 
 def Learning(filename='data.txt'):
+    print("Learning in process ...")
     data = pd.read_csv(filename, sep='\t')
     X = data.drop('species', axis=1)
     Y = data['species']
@@ -77,14 +79,16 @@ def Learning(filename='data.txt'):
     #Ypred = modelForest.predict(Xtest)
     #print(metrics.classification_report(Ypred, Ytest))
     joblib.dump(modelForest, 'model.pkl')
+    print("Success. This model was wrote in model.pkl")
     return
     
-def Prediction(audioLibrary='data_v_7_stc/test/'):
+def Prediction(audioLibrary='test/'):
+    print("Prediction in process ...")
     modelForest = joblib.load('model.pkl')
     files = os.listdir(audioLibrary)
     xs = list()
-    ans = open('answers.txt', 'w')
-    files = files[:100:5]
+    ans = open('result.txt', 'w')
+    #files = files[:100:5] #быстрая проверка
     for f in files:
         #print(f)
         audio = Sound(audioLibrary+f)    
@@ -93,20 +97,21 @@ def Prediction(audioLibrary='data_v_7_stc/test/'):
     probes = np.max( modelForest.predict_proba( np.array(xs) ), axis=1 )
     r, s = 0, 0
     for f,y,probe in zip(files,ys,probes):
-        print(f, probe, y )
+        #print(f, probe, y )
         if (y in f):
             r+=1
         if not('unknown' in f):
             s+=1
         ans.write( (f + '\t' + str(probe) + '\t' + y + '\n') )
-    print('Final:', r/s )
+    #print('Final:', r/s )
+    print("Success. You can see predictions in result.txt")
     return
 
 if __name__=="__main__":
     pars = sys.argv
     
     if("-h" in pars):
-        print("Keys:\n-m - find parameters\n-l - model learning\n-p - make prediction")
+        print("Keys:\n-m: Calculate parameters train audios. (Parameters will be saved in \'data.txt\'.)\n-l: Model learning. (The model will be saved in \'model.pkl\'.)\n-p: Make prediction using model from \'model.pkl\'.")
     elif("-m" in pars):
         FindMetrics()
     elif("-l" in pars):
@@ -114,4 +119,4 @@ if __name__=="__main__":
     elif("-p" in pars):
         Prediction()
     else:
-        print("Error. Add key -h to get help")
+        print("You didn't enter any key. Add key -h to get help")
