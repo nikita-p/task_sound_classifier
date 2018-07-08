@@ -1,6 +1,6 @@
 # Классификатор звуков. Как запустить
 
-1. Cкачайте и распакуйте [архив](https://drive.google.com/open?id=1_UQRTDw_lQfF6e6QoqojGrG1J5Rzpxee)
+1. Cкачайте и распакуйте [архив c google drive](https://drive.google.com/open?id=1_UQRTDw_lQfF6e6QoqojGrG1J5Rzpxee)
 
 2. В папку *data_v_7_stc* скопируйте файл *classifier.py*
 
@@ -11,7 +11,7 @@
 
 Для работы скрипта необходимо предварительно установить библиотеки
 ```bash
-    pip3 install numpy pandas sckit-learn
+    pip3 install numpy pandas sckit-learn scipy
 ```
 
 4. Стандартный файл *result.txt* заменится на новый, в котором будут результаты классификатора на звуки из папки *test*
