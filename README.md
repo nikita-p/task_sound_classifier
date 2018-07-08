@@ -5,11 +5,13 @@
 2. В папку *data_v_7_stc* скопируйте файл *classifier.py*
 
 3. Запустите *classifier.py* командой
-```python3 classifier.py -m -l -p
+```bash
+    python3 classifier.py -m -l -p
 ```
 
 Для работы скрипта необходимо предварительно установить библиотеки
-```pip3 install numpy pandas sckit-learn
+```bash
+    pip3 install numpy pandas sckit-learn
 ```
 
 4. Стандартный файл *result.txt* заменится на новый, в котором будут результаты классификатора на звуки из папки *test*
