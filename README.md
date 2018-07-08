@@ -11,7 +11,7 @@
 
 Для работы скрипта необходимо предварительно установить библиотеки
 ```bash
-    pip3 install numpy pandas sckit-learn scipy
+    pip3 install numpy pandas scikit-learn scipy
 ```
 
 4. Стандартный файл *result.txt* заменится на новый, в котором будут результаты классификатора на звуки из папки *test*
